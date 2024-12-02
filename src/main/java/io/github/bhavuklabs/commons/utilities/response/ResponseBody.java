@@ -1,6 +1,6 @@
 package io.github.bhavuklabs.commons.utilities.response;
 
-import io.github.venkat1701.commons.utilities.commons.Content;
+import io.github.bhavuklabs.commons.utilities.commons.Content;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +20,8 @@ import java.util.Map;
  * <h2>Usage Example</h2>
  * <pre>
  * {@code
- * import io.github.venkat1701.commons.utilities.commons.Content;
- * import io.github.venkat1701.commons.utilities.response.ResponseBody;
+ * import io.github.bhavuklabs.commons.utilities.commons.Content;
+ * import io.github.bhavuklabs.commons.utilities.response.ResponseBody;
  *
  * public class ResponseBodyExample {
  *     public static void main(String[] args) {

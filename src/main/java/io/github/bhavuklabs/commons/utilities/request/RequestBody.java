@@ -1,7 +1,7 @@
 package io.github.bhavuklabs.commons.utilities.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.venkat1701.commons.utilities.commons.Content;
+import io.github.bhavuklabs.commons.utilities.commons.Content;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ import java.util.List;
  * <h2>Usage Example</h2>
  * <pre>
  * {@code
- * import io.github.venkat1701.commons.utilities.commons.Content;
- * import io.github.venkat1701.commons.utilities.request.RequestBody;
+ * import io.github.bhavuklabs.commons.utilities.commons.Content;
+ * import io.github.bhavuklabs.commons.utilities.request.RequestBody;
  *
  * public class RequestBodyExample {
  *     public static void main(String[] args) {

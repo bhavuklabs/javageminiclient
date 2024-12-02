@@ -1,6 +1,6 @@
 package io.github.bhavuklabs.commons.utilities;
 
-import io.github.venkat1701.commons.utilities.response.ResponseBody;
+import io.github.bhavuklabs.commons.utilities.response.ResponseBody;
 
 import java.util.Map;
 

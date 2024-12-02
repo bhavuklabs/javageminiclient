@@ -6,14 +6,14 @@ package io.github.bhavuklabs.commons.prompt.generic;
  *
  * <p>
  * This interface serves as a blueprint for prompt-like structures, ensuring consistency and
- * type safety across implementations such as {@link io.github.venkat1701.commons.prompt.RequestPrompt}
- * and {@link io.github.venkat1701.commons.prompt.ResponsePrompt}.
+ * type safety across implementations such as {@link io.github.bhavuklabs.commons.prompt.RequestPrompt}
+ * and {@link io.github.bhavuklabs.commons.prompt.ResponsePrompt}.
  * </p>
  *
  * <h2>Usage Example</h2>
  * <pre>
  * {@code
- * import io.github.venkat1701.commons.prompt.generic.GenericPrompt;
+ * import io.github.bhavuklabs.commons.prompt.generic.GenericPrompt;
  *
  * public class GenericPromptExample implements GenericPrompt<String> {
  *

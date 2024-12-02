@@ -2,8 +2,8 @@ package io.github.bhavuklabs.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.venkat1701.commons.utilities.Response;
-import io.github.venkat1701.commons.utilities.response.ResponseBody;
+import io.github.bhavuklabs.commons.utilities.Response;
+import io.github.bhavuklabs.commons.utilities.response.ResponseBody;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package io.github.bhavuklabs.commons.validators.generic;
 
-import io.github.venkat1701.commons.exceptions.ValidationException;
+import io.github.bhavuklabs.commons.exceptions.ValidationException;
 
 public interface Validator<T> {
 

@@ -1,7 +1,7 @@
 package io.github.bhavuklabs.commons.utilities.commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.venkat1701.commons.prompt.generic.GenericPrompt;
+import io.github.bhavuklabs.commons.prompt.generic.GenericPrompt;
 
 /**
  * The {@code Part} class represents a single segment of content, typically used as part of
@@ -18,8 +18,8 @@ import io.github.venkat1701.commons.prompt.generic.GenericPrompt;
  * <h2>Usage Example</h2>
  * <pre>
  * {@code
- * import io.github.venkat1701.commons.utilities.commons.Part;
- * import io.github.venkat1701.commons.prompt.generic.GenericPrompt;
+ * import io.github.bhavuklabs.commons.utilities.commons.Part;
+ * import io.github.bhavuklabs.commons.prompt.generic.GenericPrompt;
  *
  * public class PartExample {
  *     public static void main(String[] args) {

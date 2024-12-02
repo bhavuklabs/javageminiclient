@@ -1,7 +1,7 @@
 package io.github.bhavuklabs.request;
 
-import io.github.venkat1701.commons.utilities.Request;
-import io.github.venkat1701.commons.utilities.request.RequestBody;
+import io.github.bhavuklabs.commons.utilities.Request;
+import io.github.bhavuklabs.commons.utilities.request.RequestBody;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

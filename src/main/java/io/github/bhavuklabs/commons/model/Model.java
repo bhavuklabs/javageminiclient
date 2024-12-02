@@ -1,8 +1,8 @@
 package io.github.bhavuklabs.commons.model;
 
-import io.github.venkat1701.commons.exceptions.ValidationException;
-import io.github.venkat1701.commons.utilities.Request;
-import io.github.venkat1701.commons.utilities.Response;
+import io.github.bhavuklabs.commons.exceptions.ValidationException;
+import io.github.bhavuklabs.commons.utilities.Request;
+import io.github.bhavuklabs.commons.utilities.Response;
 
 /**
  * The {@code Model} interface defines a contract for processing requests and generating responses
@@ -19,10 +19,10 @@ import io.github.venkat1701.commons.utilities.Response;
  *
  * <pre>
  * {@code
- * import io.github.venkat1701.commons.model.Model;
- * import io.github.venkat1701.commons.exceptions.ValidationException;
- * import io.github.venkat1701.commons.utilities.Request;
- * import io.github.venkat1701.commons.utilities.Response;
+ * import io.github.bhavuklabs.commons.model.Model;
+ * import io.github.bhavuklabs.commons.exceptions.ValidationException;
+ * import io.github.bhavuklabs.commons.utilities.Request;
+ * import io.github.bhavuklabs.commons.utilities.Response;
  *
  * public class SimpleModel implements Model {
  *     @Override

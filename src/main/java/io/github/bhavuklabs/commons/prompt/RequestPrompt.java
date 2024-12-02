@@ -1,7 +1,7 @@
 package io.github.bhavuklabs.commons.prompt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.venkat1701.commons.prompt.generic.GenericPrompt;
+import io.github.bhavuklabs.commons.prompt.generic.GenericPrompt;
 
 /**
  * The {@code RequestPrompt} class is a generic implementation of the {@link GenericPrompt} interface,
@@ -16,7 +16,7 @@ import io.github.venkat1701.commons.prompt.generic.GenericPrompt;
  * <h2>Usage Example</h2>
  * <pre>
  * {@code
- * import io.github.venkat1701.commons.prompt.RequestPrompt;
+ * import io.github.bhavuklabs.commons.prompt.RequestPrompt;
  *
  * public class RequestPromptExample {
  *     public static void main(String[] args) {

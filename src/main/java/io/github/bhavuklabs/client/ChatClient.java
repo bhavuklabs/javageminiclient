@@ -1,6 +1,6 @@
 package io.github.bhavuklabs.client;
 
-import io.github.venkat1701.models.ChatModel;
+import io.github.bhavuklabs.models.ChatModel;
 
 /**
  * The {@code ChatClient} class serves as a client for interacting with the {@link ChatModel}.
@@ -15,11 +15,11 @@ import io.github.venkat1701.models.ChatModel;
  *
  * <pre>
  * {@code
- * import io.github.venkat1701.models.ChatModel;
- * import io.github.venkat1701.client.ChatClient;
+ * import io.github.bhavuklabs.models.ChatModel;
+ * import io.github.bhavuklabs.client.ChatClient;
  * import org.springframework.web.client.RestTemplate;
- * import io.github.venkat1701.commons.validators.generic.Validator;
- * import io.github.venkat1701.basic.BasicRequestValidator;
+ * import io.github.bhavuklabs.commons.validators.generic.Validator;
+ * import io.github.bhavuklabs.basic.BasicRequestValidator;
  *
  * public class ChatClientExample {
  *     public static void main(String[] args) {
