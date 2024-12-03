@@ -1,4 +1,3 @@
-
 package io.github.bhavuklabs.javageminiclient.models;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,53 +20,48 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * ChatModel
+ * Manages interactions with chat-based generative AI APIs.
  *
- * This class is responsible for handling chat-related requests and mapping responses
- * from a REST API to a structured {@link ChatResponse} object. It uses a
- * {@link RestTemplate} to make HTTP requests and a {@link Validator} to validate
- * incoming {@link Request} objects.
+ * <p>This class facilitates making HTTP requests to chat models, handling request validation,
+ * processing responses, and mapping them to a structured {@link ChatResponse} object.
+ *
+ * <p><b>Key Features:</b>
+ * <ul>
+ *   <li>Supports custom HTTP headers and methods</li>
+ *   <li>Performs request validation before API calls</li>
+ *   <li>Robust error handling and response mapping</li>
+ * </ul>
  *
  * <p><b>Usage Example:</b>
- <pre>
- * {@code
- * public class ChatModelExample {
+ * <pre>{@code
+ * public class ChatModelDemo {
  *     public static void main(String[] args) {
- *         // Initialize dependencies
  *         RestTemplate restTemplate = new RestTemplate();
- *         ChatModel chatModel = new ChatModel(restTemplate, new BasicRequestValidator());
+ *         Validator<Request> validator = new BasicRequestValidator();
+ *         ChatModel chatModel = new ChatModel(restTemplate, validator);
  *
- *         // Prepare the request data
- *         Part<String> part = new Part<>(new RequestPrompt<>("Hello, can you assist me?"));
- *         Content content = new Content(List.of(part));
+ *         Part<String> messagePart = new Part<>(new RequestPrompt<>("Hello, AI!"));
+ *         Content content = new Content(List.of(messagePart));
  *         RequestBody requestBody = new RequestBody(List.of(content));
  *
- *         // Configure the request
  *         ChatRequest chatRequest = new ChatRequest(
- *                 "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=",
- *                 "AIzaSyXXXXXX_REPLACE_WITH_VALID_KEY",
- *                 requestBody
+ *             "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+ *             "YOUR_API_KEY",
+ *             requestBody
  *         ).withHeader("Content-Type", "application/json");
  *
  *         try {
- *             // Invoke the ChatModel
- *             ChatResponse chatResponse = chatModel.call(chatRequest);
- *
- *             // Print the response
- *             System.out.println(chatResponse.getBody());
- *         } catch (Exception e) {
- *             System.err.println("Error: " + e.getMessage());
+ *             ChatResponse response = chatModel.call(chatRequest);
+ *             System.out.println(response.getBody());
+ *         } catch (ValidationException e) {
+ *             System.err.println("Request validation failed: " + e.getMessage());
  *         }
  *     }
  * }
- * }
- * </pre>
- *
- * <p>This class supports custom headers, multiple HTTP methods, and detailed
- * error handling.
+ * }</pre>
  *
  * @author Venkat
- * @version 1.0
+ * @version 1.1
  */
 public class ChatModel implements Model {
 
@@ -75,10 +69,10 @@ public class ChatModel implements Model {
     private final Validator<Request> validator;
 
     /**
-     * Constructor for ChatModel.
+     * Constructs a ChatModel with a REST template and request validator.
      *
-     * @param restTemplate a {@link RestTemplate} instance for making HTTP calls.
-     * @param validator    a {@link Validator} instance for validating {@link Request} objects.
+     * @param restTemplate Spring's REST client for making HTTP requests
+     * @param validator Validates incoming request objects before API calls
      */
     public ChatModel(RestTemplate restTemplate, Validator<Request> validator) {
         this.restTemplate = restTemplate;
@@ -86,11 +80,11 @@ public class ChatModel implements Model {
     }
 
     /**
-     * Makes a call to the external chat API and processes the response.
+     * Executes a chat request to the specified API endpoint.
      *
-     * @param request the {@link Request} object containing the API request details.
-     * @return a {@link ChatResponse} object containing the processed response.
-     * @throws ValidationException if the request validation fails.
+     * @param request The chat request containing endpoint, method, headers, and body
+     * @return A structured chat response from the API
+     * @throws ValidationException if the request fails initial validation
      */
     @Override
     public ChatResponse call(Request request) throws ValidationException {
@@ -98,19 +92,19 @@ public class ChatModel implements Model {
 
         try {
             HttpHeaders headers = this.generateHeaders(request.getHeaders());
-            headers.remove("Authorization"); // Ensure sensitive headers are handled appropriately.
+            headers.remove("Authorization"); // Securely handle sensitive headers
             HttpEntity<RequestBody> requestEntity = new HttpEntity<>(request.getBody(), headers);
             HttpMethod method = HttpMethod.valueOf(request.getMethod());
+
             ResponseEntity<String> responseEntity = this.restTemplate.exchange(
                     request.getEndpoint(),
                     method,
                     requestEntity,
                     String.class
             );
-            System.out.println(responseEntity.getBody());
+
             return this.mapToChatResponse(responseEntity);
         } catch (RestClientException e) {
-            System.err.println("Error during API call: " + e.getMessage());
             return createErrorResponse(e);
         }
     }
