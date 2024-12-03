@@ -2,55 +2,29 @@ package io.github.bhavuklabs.javageminiclient.commons.utilities.response;
 
 import io.github.bhavuklabs.javageminiclient.commons.utilities.commons.Content;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * The {@code ResponseBody} class represents the body of a response from an API or service.
- * It contains a list of {@link Candidate} objects, usage metadata, and the model version. This class is
- * used to structure the data returned from an API or service, typically containing results or information
- * about the service's execution.
- *
- * <p>
- * The {@code ResponseBody} class is used to store and manage the response data received from services.
- * It contains candidate results (a list of {@link Content} objects), metadata about the usage,
- * and version information about the model or system returning the response.
- * </p>
- *
- * <h2>Usage Example</h2>
- * <pre>
- * {@code
- * import io.github.bhavuklabs.commons.utilities.commons.Content;
- * import io.github.bhavuklabs.commons.utilities.response.ResponseBody;
- *
- * public class ResponseBodyExample {
- *     public static void main(String[] args) {
- *         List<Content> contentList = new ArrayList<>();
- *         Map<String, Integer> usageData = Map.of("requests", 5);
- *         ResponseBody responseBody = new ResponseBody(contentList, usageData, "v1.0");
- *         System.out.println(responseBody);
- *     }
- * }
- * }
- * </pre>
- *
- * @author Venkat
- * @since 1.0
+ * It contains a list of {@link Candidate} objects, usage metadata, and the model version.
+ * This class is used to structure the data returned from an API or service.
  */
 public class ResponseBody {
 
     private List<Candidate> candidates;
-    private Map<String, Integer> usageMetadata;
+    private UsageMetadata usageMetadata;
     private String modelVersion;
 
     /**
-     * Constructs a {@code ResponseBody} with the specified list of candidates, usage metadata, and model version.
+     * Constructs a {@code ResponseBody} with the specified candidates, usage metadata, and model version.
      *
-     * @param candidates the list of {@link Candidate} objects representing the response results.
+     * @param candidates    the list of {@link Candidate} objects representing response results.
      * @param usageMetadata the metadata related to usage of the service.
-     * @param modelVersion the version of the model or system that processed the request.
+     * @param modelVersion  the version of the model or system.
      */
-    public ResponseBody(List<Candidate> candidates, Map<String, Integer> usageMetadata, String modelVersion) {
+    public ResponseBody(List<Candidate> candidates, UsageMetadata usageMetadata, String modelVersion) {
         this.candidates = candidates;
         this.usageMetadata = usageMetadata;
         this.modelVersion = modelVersion;
@@ -77,9 +51,9 @@ public class ResponseBody {
     /**
      * Retrieves the usage metadata in the response body.
      *
-     * @return a map containing usage metadata.
+     * @return the usage metadata object.
      */
-    public Map<String, Integer> getUsageMetadata() {
+    public UsageMetadata getUsageMetadata() {
         return usageMetadata;
     }
 
@@ -88,7 +62,7 @@ public class ResponseBody {
      *
      * @param usageMetadata the new usage metadata.
      */
-    public void setUsageMetadata(Map<String, Integer> usageMetadata) {
+    public void setUsageMetadata(UsageMetadata usageMetadata) {
         this.usageMetadata = usageMetadata;
     }
 
@@ -110,11 +84,6 @@ public class ResponseBody {
         this.modelVersion = modelVersion;
     }
 
-    /**
-     * Returns a string representation of this response body.
-     *
-     * @return a string representing the response body.
-     */
     @Override
     public String toString() {
         return "ResponseBody{" +
@@ -125,49 +94,100 @@ public class ResponseBody {
     }
 
     /**
-     * The {@code Candidate} class represents an individual candidate in the response body.
-     * Each candidate contains a list of {@link Content} objects, which represent parts of the candidate response.
+     * Represents a candidate result in the response.
      */
     public static class Candidate {
-        private List<Content> candidates;
+        private Content content;
+        private String finishReason;
+        private Double avgLogprobs;
 
         /**
-         * Constructs a {@code Candidate} with the specified list of {@link Content} objects.
+         * Constructs a {@code Candidate} with the specified content, finish reason, and average log probabilities.
          *
-         * @param candidates a list of {@link Content} objects representing the candidate's response.
+         * @param content     the content of the candidate.
+         * @param finishReason the reason for stopping the generation.
+         * @param avgLogprobs  the average log probabilities.
          */
-        public Candidate(List<Content> candidates) {
-            this.candidates = candidates;
+        public Candidate(Content content, String finishReason, Double avgLogprobs) {
+            this.content = content;
+            this.finishReason = finishReason;
+            this.avgLogprobs = avgLogprobs;
         }
 
-        /**
-         * Retrieves the list of {@link Content} objects for this candidate.
-         *
-         * @return the list of {@link Content} objects.
-         */
-        public List<Content> getCandidates() {
-            return candidates;
+        public Candidate(List<Content> contentList) {
+            this.content = contentList.get(0);
         }
 
-        /**
-         * Sets the list of {@link Content} objects for this candidate.
-         *
-         * @param candidates the new list of {@link Content} objects.
-         */
-        public void setCandidates(List<Content> candidates) {
-            this.candidates = candidates;
+        public Content getContent() {
+            return content;
         }
 
-        /**
-         * Returns a string representation of this candidate.
-         *
-         * @return a string representing the candidate.
-         */
+        public void setContent(Content content) {
+            this.content = content;
+        }
+
+        public String getFinishReason() {
+            return finishReason;
+        }
+
+        public void setFinishReason(String finishReason) {
+            this.finishReason = finishReason;
+        }
+
+        public Double getAvgLogprobs() {
+            return avgLogprobs;
+        }
+
+        public void setAvgLogprobs(Double avgLogprobs) {
+            this.avgLogprobs = avgLogprobs;
+        }
+
         @Override
         public String toString() {
             return "Candidate{" +
-                    "candidates=" + candidates +
+                    "content=" + content +
+                    ", finishReason='" + finishReason + '\'' +
+                    ", avgLogprobs=" + avgLogprobs +
                     '}';
         }
     }
+
+    /**
+     * Represents usage metadata for the response.
+     */
+    public static class UsageMetadata {
+        private Map<String, Integer> tokenCounts;
+
+        public UsageMetadata() {
+            this.tokenCounts = new HashMap<>();
+        }
+
+        public UsageMetadata(Map<String, Integer> tokenCounts) {
+            this.tokenCounts = tokenCounts;
+        }
+
+        public Map<String, Integer> getTokenCounts() {
+            return tokenCounts;
+        }
+
+        public void setTokenCounts(Map<String, Integer> tokenCounts) {
+            this.tokenCounts = tokenCounts;
+        }
+
+        public void put(String key, int value) {
+            this.tokenCounts.put(key, value);
+        }
+
+        public int get(String key) {
+            return this.tokenCounts.getOrDefault(key, 0);
+        }
+
+        @Override
+        public String toString() {
+            return "UsageMetadata{" +
+                    "tokenCounts=" + tokenCounts +
+                    '}';
+        }
+    }
+
 }

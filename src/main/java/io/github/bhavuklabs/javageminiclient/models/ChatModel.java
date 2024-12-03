@@ -107,6 +107,7 @@ public class ChatModel implements Model {
                     requestEntity,
                     String.class
             );
+            System.out.println(responseEntity.getBody());
             return this.mapToChatResponse(responseEntity);
         } catch (RestClientException e) {
             System.err.println("Error during API call: " + e.getMessage());
@@ -160,43 +161,71 @@ public class ChatModel implements Model {
     private ResponseBody mapToResponseBody(String body) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(body);
+            JsonNode rootNode = objectMapper.readTree(body);
 
+            // Extract candidates
             List<ResponseBody.Candidate> candidates = new ArrayList<>();
-            if (jsonNode.has("candidates")) {
-                JsonNode candidatesNode = jsonNode.get("candidates");
-                for (JsonNode candidateNode : candidatesNode) {
-                    List<Content> contentList = new ArrayList<>();
-                    if (candidateNode.has("content")) {
-                        JsonNode contentNode = candidateNode.get("content");
-                        if (contentNode.has("parts")) {
-                            for (JsonNode partNode : contentNode.get("parts")) {
-                                Part<String> part = new Part<>(new ResponsePrompt<>(partNode.get("text").asText()));
-                                Content content = new Content(List.of(part));
-                                contentList.add(content);
-                            }
-                        }
-                    }
-                    ResponseBody.Candidate candidate = new ResponseBody.Candidate(contentList);
-                    candidates.add(candidate);
+            if (rootNode.has("candidates")) {
+                for (JsonNode candidateNode : rootNode.get("candidates")) {
+                    List<Content> contentList = parseContent(candidateNode.get("content"));
+                    candidates.add(new ResponseBody.Candidate(contentList));
                 }
             }
 
-            Map<String, Integer> usageMetadata = new HashMap<>();
-            if (jsonNode.has("usageMetadata")) {
-                JsonNode usageNode = jsonNode.get("usageMetadata");
-                Iterator<Map.Entry<String, JsonNode>> fields = usageNode.fields();
-                while (fields.hasNext()) {
-                    Map.Entry<String, JsonNode> entry = fields.next();
-                    usageMetadata.put(entry.getKey(), entry.getValue().asInt());
-                }
-            }
-            String modelVersion = jsonNode.has("model") ? jsonNode.get("model").asText() : "unknown";
+            // Extract and transform usage metadata
+            ResponseBody.UsageMetadata usageMetadata = parseUsageMetadata(rootNode.get("usageMetadata"));
+
+            // Extract model version
+            String modelVersion = rootNode.path("model").asText("unknown");
+
             return new ResponseBody(candidates, usageMetadata, modelVersion);
         } catch (Exception e) {
             System.err.println("Error parsing response body: " + e.getMessage());
-            return new ResponseBody(new ArrayList<>(), new HashMap<>(), "unknown");
+            return new ResponseBody(Collections.emptyList(), null, "unknown");
         }
+    }
+
+    /**
+     * Parses the content node to extract a list of {@link Content}.
+     *
+     * @param contentNode the JSON node containing content information.
+     * @return a list of {@link Content}.
+     */
+    private List<Content> parseContent(JsonNode contentNode) {
+        List<Content> contentList = new ArrayList<>();
+        if (contentNode != null && contentNode.has("parts")) {
+            for (JsonNode partNode : contentNode.get("parts")) {
+                String text = partNode.path("text").asText("");
+                if (!text.isEmpty()) {
+                    Part<String> part = new Part<>(new ResponsePrompt<>(text));
+                    contentList.add(new Content(List.of(part)));
+                }
+            }
+        }
+        return contentList;
+    }
+
+    /**
+     * Parses the usage metadata JSON node and transforms it into {@link io.github.bhavuklabs.javageminiclient.commons.utilities.response.ResponseBody.UsageMetadata}.
+     *
+     * @param usageMetadataNode the JSON node containing usage metadata.
+     * @return a {@link io.github.bhavuklabs.javageminiclient.commons.utilities.response.ResponseBody.UsageMetadata} object.
+     */
+    private ResponseBody.UsageMetadata parseUsageMetadata(JsonNode usageMetadataNode) {
+        if (usageMetadataNode == null || !usageMetadataNode.isObject()) {
+            return new ResponseBody.UsageMetadata();
+        }
+
+        ResponseBody.UsageMetadata usageMetadata = new ResponseBody.UsageMetadata();
+        usageMetadataNode.fields().forEachRemaining(entry -> {
+            String key = entry.getKey();
+            if (entry.getValue().isInt()) {
+                int value = entry.getValue().asInt();
+                usageMetadata.put(key, value);
+            }
+        });
+
+        return usageMetadata;
     }
 
     /**
@@ -211,7 +240,7 @@ public class ChatModel implements Model {
         chatResponse.setStatusCode(500);
         Part<String> part = new Part<>(new ResponsePrompt<>(e.getLocalizedMessage()));
         Content content = new Content(List.of(part));
-        ResponseBody.Candidate candidate = new ResponseBody.Candidate(List.of(content));
+        ResponseBody.Candidate candidate = new ResponseBody.Candidate(content, "ERROR", 0.0);
         chatResponse.setBody(new ResponseBody(List.of(candidate), null, "gemini-flash-1.5"));
         return chatResponse;
     }
