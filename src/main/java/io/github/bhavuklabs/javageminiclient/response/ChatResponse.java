@@ -11,10 +11,34 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Represents the response from a chat request, encapsulating various response attributes such as status code,
- * headers, body, success flag, and error message.
+ * Represents an HTTP response from a chat API request.
+ *
+ * <p>Encapsulates response details including status code, headers, body,
+ * success status, and optional error information.</p>
+ *
+ * <p><b>Key Features:</b>
+ * <ul>
+ *   <li>Immutable headers via {@link Collections#unmodifiableMap(Map)} ()}</li>
+ *   <li>Automatic success determination based on status code</li>
+ *   <li>Builder pattern for flexible response construction</li>
+ *   <li>JSON body parsing utility</li>
+ * </ul>
+ *
+ * <p><b>Usage Example:</b>
+ * <pre>{@code
+ * ChatResponse response = new ChatResponse.Builder()
+ *     .statusCode(200)
+ *     .body(responseBody)
+ *     .headers(headerMap)
+ *     .build();
+ *
+ * if (response.isSuccessfull()) {
+ *     String parsedContent = response.parseBody(String.class);
+ * }
+ * }</pre>
  *
  * @author Venkat
+ * @version 1.1
  * @since 1.0
  */
 public class ChatResponse implements Response {
@@ -156,12 +180,12 @@ public class ChatResponse implements Response {
     }
 
     /**
-     * Parses the body of the response into a Java object of the specified class using Jackson.
+     * Parses the response body into a specified type using Jackson.
      *
-     * @param clazz The class to convert the response body to.
-     * @param <T> The type of the object.
-     * @return The parsed object.
-     * @throws RuntimeException if the body cannot be parsed.
+     * @param clazz Target class for parsing
+     * @param <T> Type of parsed object
+     * @return Parsed object
+     * @throws RuntimeException if parsing fails
      */
     @JsonIgnore
     public <T> T parseBody(Class<T> clazz) {
