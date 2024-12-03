@@ -49,7 +49,6 @@ public class BasicRequestValidator implements RequestValidator {
         try {
             URI uri = new URI(uriString);
             String domain = uri.getHost();
-
             if (domain == null) {
                 throw new ValidationException("Unauthorized domain: " + domain);
             }
